@@ -43,7 +43,7 @@ npx wrangler publish
 curl "https://cloudflare-deadman-switch.$MY_DOMAIN/?ping_token=$PING_TOKEN"
 ```
 
-## Example: Prometheus setup.
+## Example: Prometheus setup
 
 * Add an alert which always fires to prometheus `rules.yaml`:
 
@@ -51,26 +51,26 @@ curl "https://cloudflare-deadman-switch.$MY_DOMAIN/?ping_token=$PING_TOKEN"
 groups:
 - name: prometheus
   rules:
-  - alert: PrometheusAlertmanagerE2eDeadManSwitch
+  - alert: CloudflareDeadManSwitch
     expr: vector(1)
     for: 0m
     labels:
       severity: critical
     annotations:
-      summary: Prometheus AlertManager E2E dead man switch (instance {{ $labels.instance }})
-      description: "Prometheus DeadManSwitch is an always-firing alert. It's used as an end-to-end test of Prometheus through the Alertmanager.\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      summary: Cloudflare dead man switch (instance {{ $labels.instance }})
+      description: "Cloudflare DeadManSwitch is an always-firing alert. It's used to keep heartbeat pings to a cloudflare worker.\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 ```
 
 * Tell alertmanager to send those to your worker in `alertmanager.yaml`:
 
 ``` yaml
 route:
-  - receiver: deadman_switch
+  - receiver: cloudflare_deadman_switch
     match:
-      alertname: 'PrometheusAlertmanagerE2eDeadManSwitch'
+      alertname: 'CloudflareDeadManSwitch'
       severity: 'critical'
 receivers:
-  - name: deadman_switch
+  - name: cloudflare_deadman_switch
     webhook_configs:
       - url: "https://cloudflare-deadman-switch.$MY_DOMAIN/?ping_token=$PING_TOKEN"
         send_resolved: false
