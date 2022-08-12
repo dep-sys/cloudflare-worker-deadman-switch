@@ -1,0 +1,17 @@
+name = "cloudflare-deadman-switch"
+main = "src/index.ts"
+compatibility_date = "2022-08-11"
+
+kv_namespaces = [{binding = "deadman_switch", id = "1ad452d02f044b128c31727fa3dfd71f"}]
+
+[triggers]
+crons = [ "*/5 * * * *" ]
+
+[vars]
+TOLERANCE_SECONDS = "1800"
+
+# The necessary secrets are:
+# - PUSHOVER_USER_KEY
+# - PUSHOVER_API_TOKEN
+# - PING_TOKEN
+# Run `echo $value | wrangler secret put $key`
